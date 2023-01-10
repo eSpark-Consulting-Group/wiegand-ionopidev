@@ -19,10 +19,11 @@ f = open("/sys/class/ionopi/wiegand/w1_data", "r")
 p = poll()
 p.register(f.fileno(), POLLPRI)
 f.read()
-
+count = 0
 while True:
     print("Waiting for card to scan.........")
     p.poll()
+    count = count + 1
     time.sleep(0.5)
 
     # consume event
@@ -30,6 +31,7 @@ while True:
     scanData = format(int(f.read()) , '026b')
     f_code = int(scanData[1:9] , 2)
     card_number = int(scanData[10:25] , 2)
+    print("Scan = ", count)
     print("Facility Code =", f_code)
     print("Card Number = " , card_number)
 
