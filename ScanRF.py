@@ -20,11 +20,14 @@ p = poll()
 p.register(f.fileno(), POLLPRI)
 f.read()
 count = 0
+timeout = 8
+
 while True:
     print("Waiting for card to scan.........")
     p.poll()
+    start_time = round(time.time())
     count = count + 1
-    time.sleep(0.5)
+    time.sleep(0.2)
 
     # consume event
     f.seek(13)
@@ -34,4 +37,22 @@ while True:
     print("Scan = ", count)
     print("Facility Code =", f_code)
     print("Card Number = " , card_number)
+
+    while((round(time.time()) - start_time) <= timeout):
+      p.poll()
+      time.sleep(0.2)
+
+      # consume event
+      f.seek(13)
+      scanData1 = format(int(f.read()) , '026b')
+      f_code1 = int(scanData1[1:9] , 2)
+      card_number1 = int(scanData1[10:25] , 2)
+      if(card_number != card_number1):
+        count = count + 1
+        print("Scan = ", count)
+        print("Facility Code =", f_code1)
+        print("Card Number = " , card_number1)
+
+
+
 
