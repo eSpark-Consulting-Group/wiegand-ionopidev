@@ -52,7 +52,5 @@ while True:
         print("Scan = ", count)
         print("Facility Code =", f_code1)
         print("Card Number = " , card_number1)
-
-
-
-
+      else:
+        print("Card already scanned....")
